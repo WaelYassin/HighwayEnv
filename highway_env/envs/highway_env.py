@@ -106,8 +106,8 @@ class HighwayEnv(AbstractEnv):
             reward = utils.lmap(
                 reward,
                 [
-                    self.config["collision_reward"],
-                    self.config["high_speed_reward"] + self.config["right_lane_reward"],
+                    self.config["collision_reward"] + self.config["high_speed_reward"],
+                    self.config["lane_change_reward"] + self.config["right_lane_reward"]
                 ],
                 [0, 1],
             )
@@ -130,7 +130,8 @@ class HighwayEnv(AbstractEnv):
             "collision_reward": float(self.vehicle.crashed),
             "right_lane_reward": lane / max(len(neighbours) - 1, 1),
             "high_speed_reward": np.clip(scaled_speed, 0, 1),
-            "on_road_reward": float(self.vehicle.on_road),
+            "lane_change_reward": action in [0,1],
+            "on_road_reward": float(self.vehicle.on_road)
         }
 
     def _is_terminated(self) -> bool:
